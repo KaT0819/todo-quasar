@@ -10,10 +10,12 @@
           aria-label="Menu"
           @click="toggleLeftDrawer"
         />
-
-        <q-toolbar-title>
-          Quasar App
-        </q-toolbar-title>
+        <div class="q-px-lg q-pt-xl q-mb-md">
+          <div class="text-h3">Todo</div>
+          <div class="text-subtitle1">{{ todaysDate }}</div>
+        </div>
+        <q-img src="/mountain.jpg" class="header-image absolute-top" />
+        <q-toolbar-title> Quasar App </q-toolbar-title>
 
         <div>Quasar v{{ $q.version }}</div>
       </q-toolbar>
@@ -22,25 +24,58 @@
     <q-drawer
       v-model="leftDrawerOpen"
       show-if-above
-      bordered
+      :width="400"
+      :breakpoint="600"
     >
-      <q-list>
-        <q-item-label
-          header
-        >
-          Essential Links
-        </q-item-label>
+      <q-scroll-area
+        style="
+          height: calc(100% - 142px);
+          margin-top: 142px;
+          border-right: 1px solid #ddd;
+        "
+      >
+        <q-list padding>
+          <q-item to="/" exact clickable v-ripple>
+            <q-item-section avatar>
+              <q-icon name="list" />
+            </q-item-section>
 
-        <EssentialLink
-          v-for="link in essentialLinks"
-          :key="link.title"
-          v-bind="link"
-        />
-      </q-list>
+            <q-item-section> Todo </q-item-section>
+          </q-item>
+
+          <q-item to="/help" exact active clickable v-ripple>
+            <q-item-section avatar>
+              <q-icon name="help" />
+            </q-item-section>
+
+            <q-item-section> Help </q-item-section>
+          </q-item>
+
+          <q-item to="https://google.co.jp" clickable v-ripple>
+            <q-item-section avatar>
+              <q-icon name="send" />
+            </q-item-section>
+
+            <q-item-section> Send </q-item-section>
+          </q-item>
+        </q-list>
+      </q-scroll-area>
+
+      <q-img class="absolute-top" src="/mountain.jpg" style="height: 142px">
+        <div class="absolute-bottom bg-transparent">
+          <q-avatar size="56px" class="q-mb-sm">
+            <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
+          </q-avatar>
+          <div class="text-weight-bold">Razvan Stoenescu</div>
+          <div>@rstoenescu</div>
+        </div>
+      </q-img>
     </q-drawer>
 
     <q-page-container>
-      <router-view />
+      <keep-alive>
+        <router-view />
+      </keep-alive>
     </q-page-container>
   </q-layout>
 </template>
@@ -49,68 +84,85 @@
 import { defineComponent, ref } from 'vue';
 import EssentialLink from 'components/EssentialLink.vue';
 
+import { date } from 'quasar';
+
 const linksList = [
   {
     title: 'Docs',
     caption: 'quasar.dev',
     icon: 'school',
-    link: 'https://quasar.dev'
+    link: 'https://quasar.dev',
   },
   {
     title: 'Github',
     caption: 'github.com/quasarframework',
     icon: 'code',
-    link: 'https://github.com/quasarframework'
+    link: 'https://github.com/quasarframework',
   },
   {
     title: 'Discord Chat Channel',
     caption: 'chat.quasar.dev',
     icon: 'chat',
-    link: 'https://chat.quasar.dev'
+    link: 'https://chat.quasar.dev',
   },
   {
     title: 'Forum',
     caption: 'forum.quasar.dev',
     icon: 'record_voice_over',
-    link: 'https://forum.quasar.dev'
+    link: 'https://forum.quasar.dev',
   },
   {
     title: 'Twitter',
     caption: '@quasarframework',
     icon: 'rss_feed',
-    link: 'https://twitter.quasar.dev'
+    link: 'https://twitter.quasar.dev',
   },
   {
     title: 'Facebook',
     caption: '@QuasarFramework',
     icon: 'public',
-    link: 'https://facebook.quasar.dev'
+    link: 'https://facebook.quasar.dev',
   },
   {
     title: 'Quasar Awesome',
     caption: 'Community Quasar projects',
     icon: 'favorite',
-    link: 'https://awesome.quasar.dev'
-  }
+    link: 'https://awesome.quasar.dev',
+  },
 ];
 
 export default defineComponent({
   name: 'MainLayout',
 
   components: {
-    EssentialLink
+    // EssentialLink,
+  },
+  computed: {
+    todaysDate() {
+      let timeStamp = Date.now();
+      return date.formatDate(timeStamp, 'dddd D MMMM');
+    },
   },
 
-  setup () {
-    const leftDrawerOpen = ref(false)
+  setup() {
+    const leftDrawerOpen = ref(false);
 
     return {
       essentialLinks: linksList,
       leftDrawerOpen,
-      toggleLeftDrawer () {
-        leftDrawerOpen.value = !leftDrawerOpen.value
-      }
-    }
-  }
+      toggleLeftDrawer() {
+        leftDrawerOpen.value = !leftDrawerOpen.value;
+      },
+    };
+  },
 });
 </script>
+
+<style lang="scss">
+.header-image {
+  height: 142px;
+  z-index: -1;
+  opacity: 0.4;
+  filter: grayscale(100%);
+}
+</style>
